@@ -1,3 +1,5 @@
+# statgl (development version)
+
 # statgl 0.5.2.9000
 
 * `statgl_plot()` gains a `position` argument for bar/column charts:
