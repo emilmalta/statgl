@@ -161,17 +161,20 @@ and \code{height} is not passed explicitly, height is scaled up to as tall as
 is allowed.}
 
 \item{highlight}{Optional character vector of labels to visually
-emphasise. Matching elements are drawn in the Statgl accent orange
-(\verb{#faa41a}); everything else is drawn in neutral grey (\verb{#d3d3d3}).
-Overrides \code{palette} when set. Dispatch depends on chart shape:
+emphasise. Dispatch depends on chart shape:
 \itemize{
 \item \strong{Grouped chart} (\verb{group =} supplied): \code{highlight} matches against
-series names (the \code{group} values). Line/area types additionally get
-a thicker stroke and a higher \code{zIndex} so the highlighted series
-sits in the foreground.
+series names (the \code{group} values). Matching series keep their
+palette colour at full opacity; non-matching series are drawn in
+the same palette colour at reduced alpha (\code{0.2}) so the chart
+keeps its palette identity rather than collapsing to grey.
+Line/area types additionally get a thicker stroke (\code{lineWidth = 4})
+and a higher \code{zIndex} so the highlighted series sits in the
+foreground.
 \item \strong{Ungrouped bar / column chart}: \code{highlight} matches against the
-\code{x} values, re-colouring individual bars. Useful for emphasising
-one district, commodity, etc. on a per-bar chart.
+\code{x} values, drawing matched bars in Statgl accent orange
+(\verb{#faa41a}) and the rest in neutral grey (\verb{#d3d3d3}). Useful for
+emphasising one district, commodity, etc. on a per-bar chart.
 \item \strong{Anything else ungrouped} (line, scatter, ...): no-op with a
 warning, since there's nothing series- or bar-shaped to single out.
 }
