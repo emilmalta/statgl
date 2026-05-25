@@ -1,4 +1,4 @@
-# statgl (development version)
+# statgl 0.5.2.9003
 
 * `statgl_plot()` gains a `series_tags` argument for attaching arbitrary
   per-series metadata to the resulting Highcharts series. Pass a named
