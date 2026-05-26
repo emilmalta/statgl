@@ -261,6 +261,10 @@ statgl_plot <- function(
   # highlight, stacking, position, series_tags).
   is_heatmap <- identical(type, "heatmap")
 
+  # Computed early so the y-validation block below can gate on it. The
+  # pyramid setup block further down re-uses the same flag.
+  pyramid_on <- !is.null(pyramid) && !identical(pyramid, FALSE)
+
   # Two-group: c(g1, g2) -- g1 is the pyramid split, g2 is the fill dimension.
   # Strip g2 out early so all existing pyramid/mapping logic runs on g1 only.
   has_fill_group <- FALSE
@@ -303,22 +307,22 @@ statgl_plot <- function(
   mapping <- rlang::eval_tidy(mapping_expr)
 
   # --- y validation ---------------------------------------------
-  # Warn (don't error) if the input y has negative values. This runs on
-  # the *original* y, before any pyramid mirroring, so the check is about
-  # what the user actually passed in. Only fires when y resolves to a bare
-  # column name -- expression y's (e.g. `y = log(value)`) are left alone.
-  # Skipped for heatmaps: `y` is the categorical row aesthetic there, not a
-  # numeric, so this check would be meaningless (or misfire on an integer y
-  # like a month number).
-  if (!is_heatmap && rlang::is_symbol(y_expr)) {
+  # Pyramid mode negates one side of `y` to mirror it across zero, so a `y`
+  # that already contains negative values produces a broken pyramid (the
+  # negation cancels out). Warn in that case so the user notices. For all
+  # other chart types negative y is fine -- a line dipping below zero, a
+  # column going downward etc. are perfectly valid -- so the check is
+  # gated on `pyramid_on`. Expression y's (e.g. `y = log(value)`) are
+  # left alone since we can't introspect them statically.
+  if (pyramid_on && rlang::is_symbol(y_expr)) {
     y_name_check <- rlang::as_name(y_expr)
     if (y_name_check %in% names(df)) {
       y_vals_check <- df[[y_name_check]]
       if (is.numeric(y_vals_check) && any(y_vals_check < 0, na.rm = TRUE)) {
         warning(
           "`y` column \"", y_name_check, "\" contains negative values. ",
-          "`statgl_plot()` expects non-negative y; the chart may render ",
-          "unexpectedly.",
+          "Pyramid mode mirrors one side across zero; pre-negative input ",
+          "will produce a broken pyramid.",
           call. = FALSE
         )
       }
@@ -329,7 +333,7 @@ statgl_plot <- function(
   # Resolve pyramid early so we can mutate `df` *before* hchart() builds
   # series. Uses the same `group =` column as the rest of the function -- it is
   # a modifier on a grouped chart, not its own grouping mechanism.
-  pyramid_on     <- !is.null(pyramid) && !identical(pyramid, FALSE)
+  # `pyramid_on` is set further up so the y-validation block can read it.
   pyramid_levels <- NULL
 
   if (pyramid_on && is_heatmap) {
