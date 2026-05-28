@@ -1,5 +1,10 @@
 # statgl (development version)
 
+* `statgl_plot()` now reflows the Highcharts chart inside a
+  `requestAnimationFrame` callback after render. Fixes charts appearing
+  at ~3/4 width when lazy-rendered inside a `shorty` shortcode
+  (IntersectionObserver / `<template>` path) until the window is resized.
+
 # statgl 0.5.2.9003
 
 * `statgl_plot()` gains heatmap support via `type = "heatmap"`. Opt-in

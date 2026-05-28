@@ -1431,6 +1431,16 @@ statgl_plot <- function(
       if (mql.addEventListener) mql.addEventListener("change", applyOutline);
       else if (mql.addListener) mql.addListener(applyOutline); // Safari fallback
     }
+
+    // Reflow after the browser has calculated layout. When a chart is
+    // lazy-rendered inside a shorty <template> (IntersectionObserver path),
+    // HTMLWidgets.staticRender() fires before the browser runs a layout pass
+    // on the newly-appended content, so Highcharts measures the wrong
+    // container width. requestAnimationFrame defers to after the first paint.
+    requestAnimationFrame(function() {
+      var c = findChart();
+      if (c) { try { c.reflow(); } catch(e) {} }
+    });
   }
   '
   )
