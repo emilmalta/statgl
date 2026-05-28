@@ -867,6 +867,11 @@ statgl_plot <- function(
     series_opts$marker <- list(enabled = FALSE)
   }
 
+  # remove bar/column border (looks especially bad in dark mode)
+  if (type %in% c("bar", "column")) {
+    series_opts$borderWidth <- 0
+  }
+
   if (length(series_opts) > 0) {
     chart <- highcharter::hc_plotOptions(chart, series = series_opts)
   }
