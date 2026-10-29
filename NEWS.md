@@ -8,11 +8,9 @@
   "{value:,.0f}"))`, which ignore the locale and print `1,000`.
 
 * RStudio project template "Ny side til stat.gl" (`pub_project()` /
-  `use_statgl_template()`) works again: the template file is looked up as
-  `statgl_template.qmd` (the missing extension made every run fail with
-  "Template file not found"), and `site.js`, `GSLogo.png` and `favicon.ico`
-  are copied to the project root so the page renders with the real
-  stat.gl navbar and footer. Requires statgl-shortcodes >= 1.1.0.
+  `use_statgl_template()`): `site.js`, `GSLogo.png` and `favicon.ico` are
+  copied to the project root so the page renders with the real stat.gl
+  navbar and footer. Requires statgl-shortcodes >= 1.1.0.
 
 * Accessibility (WCAG 2.2 AA), attribute-level only — nothing changes
   visually:
